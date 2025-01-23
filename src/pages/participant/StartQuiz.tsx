@@ -1,6 +1,7 @@
 import { IconsCmp } from "../../components/IconsCmp"
 import { Button } from "../../design_system/components/ui/Button"
 import Input from "../../design_system/components/ui/Input"
+import { FormFieldConfig, schemaBuilder } from "../../lib/zod-schemas"
 
 const QuizInstructionCmp = () => {
 
@@ -21,7 +22,9 @@ const QuizInstructionCmp = () => {
 }
 
 export const StartQuiz = () => {
-
+  const formFields: FormFieldConfig[] = [ { name: 'fullname', required: true, type: 'string' } ]
+  const schema = schemaBuilder(formFields)
+  console.log(schema)
   return (
     <div className="flex flex-col items-ceneter gap-10 pt-10">
       {/* header */}

@@ -1,4 +1,5 @@
 import { IconsCmp } from "../../components/IconsCmp"
+import Input from "../../design_system/components/ui/Input"
 
 const QuizInstructionCmp = () => {
 
@@ -30,7 +31,7 @@ export const StartQuiz = () => {
         <form>
           <div className="flex flex-col items-start gap-2">
             <label htmlFor="fullname" className="capitalize font-medium text-[24px] text-[#9A9A9B] ">fullname</label>
-            <input type="text" className="border w-[323px]  h-[45px] p-3 outline-none rounded-[16px] bg-[#D9D9D9]"  />
+            <Input type="text" name="details"   />
           </div>
           {/* we need to add a dropshadow to this text */}
           <button className="w-full mt-5 h-[52px] rounded-[16px] font-semibold text-[20px] text-[#FFFFFF]   bg-[#28A745]">start quiz</button>

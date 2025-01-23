@@ -1,5 +1,5 @@
 import { AllRoutes } from "./pages/AllRoutes"
-
+import './index.css'
 
 function App() {
   return (

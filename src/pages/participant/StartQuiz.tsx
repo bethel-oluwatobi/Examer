@@ -1,4 +1,5 @@
 import { IconsCmp } from "../../components/IconsCmp"
+import { Button } from "../../design_system/components/ui/Button"
 import Input from "../../design_system/components/ui/Input"
 
 const QuizInstructionCmp = () => {
@@ -31,10 +32,10 @@ export const StartQuiz = () => {
         <form>
           <div className="flex flex-col items-start gap-2">
             <label htmlFor="fullname" className="capitalize font-medium text-[24px] text-[#9A9A9B] ">fullname</label>
-            <Input type="text" name="details"   />
+            <Input type="text" name="details"  />
           </div>
           {/* we need to add a dropshadow to this text */}
-          <button className="w-full mt-5 h-[52px] rounded-[16px] font-semibold text-[20px] text-[#FFFFFF]   bg-[#28A745]">start quiz</button>
+          <Button>Start quiz</Button>
         </form>
       </div>
       {/* footer or instructions sections */ }

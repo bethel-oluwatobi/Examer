@@ -5,6 +5,7 @@ import { z } from "zod"
 import { Fields, FormSchema } from "../../components/FormSchema/FormSchema"
 import { Storage } from "../../lib/stoarge"
 import { useNavigate } from "react-router-dom"
+import { NAV_LINKS } from "../../shared/participants/constants"
 
 const QuizInstructionCmp = () => {
 
@@ -42,7 +43,7 @@ export const StartQuiz = () => {
   const naviagate = useNavigate()
   const submit = (data: TStartQuizDetails) => {
     Storage.save(STORAGE_KEY, data)
-    naviagate('1/questions')
+    naviagate(NAV_LINKS.questions)
   }
  
 

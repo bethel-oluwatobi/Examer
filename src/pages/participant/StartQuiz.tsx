@@ -2,9 +2,9 @@ import { useForm } from "react-hook-form"
 import { IconsCmp } from "../../components/IconsCmp"
 import { Button } from "../../design_system/components/ui/Button"
 import Input from "../../design_system/components/ui/Input"
-import { FormFieldConfig, schemaBuilder } from "../../lib/zod-schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { LabelAndErrorCmp } from "../../design_system/app/form/FormInput/LabelAndErrorCmp"
 
 const QuizInstructionCmp = () => {
 
@@ -29,14 +29,13 @@ type TStartQuizDetails = {
 }
 
 const startQuizSchema = z.object({
-  fullname:z.string()
+  fullname:z.string().min(1)
 })
 
-const fieldConfig:FormFieldConfig[] = [{name:'fullname',required:true, type:'string'}]
 export const StartQuiz = () => {
  // todo understand the schema buikder so i can use it to my requirement
  
-  const { handleSubmit, register, } = useForm<TStartQuizDetails>({ resolver: zodResolver(startQuizSchema) })
+  const { handleSubmit, register,formState:{errors} } = useForm<TStartQuizDetails>({ resolver: zodResolver(startQuizSchema) })
   
   const submit = (data:TStartQuizDetails)=> {
      console.log(data)
@@ -50,10 +49,7 @@ export const StartQuiz = () => {
         <IconsCmp icon="circleUserIcon" height="84" width="84" />
         <p className="font-semibold text-[20px] text-center text-balance text-[#6C757D]">Promotion Examination</p>
         <form onSubmit={handleSubmit(submit)}>
-          <div className="flex flex-col items-start gap-2">
-            <label htmlFor="fullname" className="capitalize font-medium text-[24px] text-[#9A9A9B] ">fullname</label>
-            <Input type="text" name="fullname" register={register} />
-          </div>
+          <LabelAndErrorCmp errors={errors} name="fullname" register={register} type="text" />
           {/* we need to add a dropshadow to this text */}
           <Button>Start quiz</Button>
         </form>

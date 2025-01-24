@@ -3,6 +3,8 @@ import { IconsCmp } from "../../components/IconsCmp"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Fields, FormSchema } from "../../components/FormSchema/FormSchema"
+import { Storage } from "../../lib/stoarge"
+import { useNavigate } from "react-router-dom"
 
 const QuizInstructionCmp = () => {
 
@@ -29,15 +31,18 @@ type TStartQuizDetails = {
 const startQuizSchema = z.object({
   fullname:z.string().min(1)
 })
+
 const START_QUIZ_FIELD:[Fields] = [ { name: 'fullname', type: "text",} ]
+const STORAGE_KEY = 'Partiipant-Details'
 
 export const StartQuiz = () => {
  // todo understand the schema buikder so i can use it to my requirement
  
-  const { handleSubmit, register,formState:{errors} } = useForm<TStartQuizDetails>({ resolver: zodResolver(startQuizSchema) })
-  
-  const submit = (data:TStartQuizDetails)=> {
-     console.log(data)
+  const { handleSubmit, register, formState: { errors } } = useForm<TStartQuizDetails>({ resolver: zodResolver(startQuizSchema) })
+  const naviagate = useNavigate()
+  const submit = (data: TStartQuizDetails) => {
+    Storage.save(STORAGE_KEY, data)
+    naviagate('1/questions')
   }
  
 

@@ -1,13 +1,14 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "../../design_system/components/ui/Button"
 import { useEffect, useState } from "react"
 import { ParticipantLayouts } from "../../layouts/participants/ParticipantLayouts"
+import { Storage } from "../../lib/stoarge"
+import { NAV_LINKS } from "../../shared/participants/constants"
 
 
 const exams = [
   {
   questions: 'who Gave birth to Jesus',
-  answer: 'mary',
   options: [ {
       optionLetter: 'A',
       optionsAnswer: 'hannah',
@@ -15,6 +16,7 @@ const exams = [
       {
       optionLetter: 'B',
       optionsAnswer: 'mary',
+      correct:true
     },{
       optionLetter: 'C',
       optionsAnswer: 'jacob',
@@ -26,7 +28,6 @@ const exams = [
 },
   {
   questions: 'who Gave birth to Jesus',
-  answer: 'mary',
  options: [ {
       optionLetter: 'A',
       optionsAnswer: 'hannah',
@@ -34,6 +35,8 @@ const exams = [
       {
       optionLetter: 'B',
       optionsAnswer: 'mary',
+      correct:true
+      
     },{
       optionLetter: 'C',
       optionsAnswer: 'jacob',
@@ -45,17 +48,17 @@ const exams = [
   },
   {
   questions: 'who is joseph Father',
-  answer: 'jacob',
     options: [ {
       optionLetter: 'A',
       optionsAnswer: 'hannah',
     },
       {
       optionLetter: 'B',
-      optionsAnswer: 'mary',
+      optionsAnswer: 'mary',      
     },{
       optionLetter: 'C',
       optionsAnswer: 'jacob',
+      correct:true      
     },{
       optionLetter: 'D',
       optionsAnswer: 'david',
@@ -64,27 +67,28 @@ const exams = [
   }
 ]
 
-type TExams = typeof exams
+// type TExams = typeof exams
 
 
 interface IProps {
   index: number,
   optionAnswer: string
   optionLetter: string
-  
+  correctOption?: boolean
+  selcetedOption: number | undefined
+  setSelectedOption:(value:number)=>void
 }
 
-const OptionsCmp = ({index, optionAnswer, optionLetter}:IProps) => {
+const OptionsCmp = ({index, optionAnswer, optionLetter, correctOption, selcetedOption,setSelectedOption}:IProps) => {
 
-  const [selcetedOption, setSelectedOption] = useState<number>()
   
-  const optionsSelect = (option: string, index: number) => {
+  const optionsSelect = (index: number) => {
     setSelectedOption(index)
   }
   return (
-    <div className={` flex items-center gap-5  ${selcetedOption === index ?'bg-blue-400' : 'bg-white'}`}>
-      <p key={index } onClick={()=> optionsSelect(optionLetter,index)}>{optionLetter}</p>
-      <p key={index } onClick={()=> optionsSelect(optionAnswer,index)}>{optionAnswer}</p>
+    <div key={index} onClick={ () => optionsSelect(index) } className={` flex items-center gap-5  ${selcetedOption === index ?'bg-blue-400' : 'bg-white'}`}>
+      <p>{optionLetter}</p>
+      <p >{optionAnswer}</p>
     </div>
   )
 }
@@ -92,16 +96,27 @@ const OptionsCmp = ({index, optionAnswer, optionLetter}:IProps) => {
 export const Questions = () => {
   const param = useParams()
   if (!param.id)
-  {
-    return
-  }
+    {
+      return
+    }
   const id = parseInt(param.id)
   const [ questionCount, setQuestionCount ] = useState(id)
+  const [selcetedOption, setSelectedOption] = useState<number>()
   // const pathname = useResolvedPath()
+  const navigate =  useNavigate()
+  const QUESTION_STORAGE_KEY = 'QUESTION_KEY' as const
   
   const nextQuestion = () => {
-    setQuestionCount((prev)=> prev+1)
-  }
+    if (selcetedOption === undefined) return
+    
+    const optionChoosen = [ exams[ selcetedOption ] ]
+    Storage.save(QUESTION_STORAGE_KEY, JSON.stringify([ ...optionChoosen ]))   
+    console.log(exams.length, questionCount)
+    if (exams.length < questionCount + 1) navigate(NAV_LINKS.result)
+    
+    setQuestionCount((prev) => prev + 1)
+    setSelectedOption(undefined)
+    }
 
   // console.log(pathname)
 
@@ -110,11 +125,19 @@ export const Questions = () => {
   useEffect(() => {
   }, [nextQuestion])
 
+  if(!exams[questionCount -1]) return
   return (
     <ParticipantLayouts>
-        <h1>{ exams[questionCount].questions }</h1>
-      { exams[ questionCount ].options.map((option, index) => (
-        <OptionsCmp index={index} optionLetter={option.optionLetter} optionAnswer={option.optionsAnswer} key={index} />
+        <h1>{ exams[questionCount-1].questions}</h1>
+      { exams[ questionCount - 1 ].options.map((option, index) => (
+        <OptionsCmp
+          index={ index }
+          optionLetter={ option.optionLetter }
+          selcetedOption={ selcetedOption }
+          setSelectedOption={ setSelectedOption }
+          optionAnswer={ option.optionsAnswer }
+          correctOption={ option.correct } key={ index }
+        />
         )) }
         <Button onClick={nextQuestion} >Next</Button>
     </ParticipantLayouts>

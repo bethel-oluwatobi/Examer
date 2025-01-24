@@ -1,7 +1,10 @@
+import { useForm } from "react-hook-form"
 import { IconsCmp } from "../../components/IconsCmp"
 import { Button } from "../../design_system/components/ui/Button"
 import Input from "../../design_system/components/ui/Input"
 import { FormFieldConfig, schemaBuilder } from "../../lib/zod-schemas"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
 const QuizInstructionCmp = () => {
 
@@ -21,10 +24,24 @@ const QuizInstructionCmp = () => {
   )
 }
 
+type TStartQuizDetails = {
+  fullname:string
+}
+
+const startQuizSchema = z.object({
+  fullname:z.string()
+})
+
+const fieldConfig:FormFieldConfig[] = [{name:'fullname',required:true, type:'string'}]
 export const StartQuiz = () => {
-  const formFields: FormFieldConfig[] = [ { name: 'fullname', required: true, type: 'string' } ]
-  const schema = schemaBuilder(formFields)
-  console.log(schema)
+ // todo understand the schema buikder so i can use it to my requirement
+ 
+  const { handleSubmit, register, } = useForm<TStartQuizDetails>({ resolver: zodResolver(startQuizSchema) })
+  
+  const submit = (data:TStartQuizDetails)=> {
+     console.log(data)
+  }
+
   return (
     <div className="flex flex-col items-ceneter gap-10 pt-10">
       {/* header */}
@@ -32,10 +49,10 @@ export const StartQuiz = () => {
         <h1 className="font-bold  text-[24px] align-middle  text-center text-balance">Welcome To Sunday School Quiz</h1>
         <IconsCmp icon="circleUserIcon" height="84" width="84" />
         <p className="font-semibold text-[20px] text-center text-balance text-[#6C757D]">Promotion Examination</p>
-        <form>
+        <form onSubmit={handleSubmit(submit)}>
           <div className="flex flex-col items-start gap-2">
             <label htmlFor="fullname" className="capitalize font-medium text-[24px] text-[#9A9A9B] ">fullname</label>
-            <Input type="text" name="details"  />
+            <Input type="text" name="fullname" register={register} />
           </div>
           {/* we need to add a dropshadow to this text */}
           <Button>Start quiz</Button>

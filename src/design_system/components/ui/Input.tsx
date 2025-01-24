@@ -1,3 +1,4 @@
+import { UseFormRegister } from "react-hook-form"
 import { renderClassNamesConditionally } from "../../../utils/conditionallyRenderingOfClassName"
 
 
@@ -8,17 +9,17 @@ interface IProps {
     className?: string,
     type: InputType,
     name: string,
-    
+    register:UseFormRegister<any>
 }
 
 
 
 const Input = ({ ...inputProps }: IProps) => {
-    const {className} =  inputProps
+    const {className, register, name} =  inputProps
     // const stringToArray = '1px border'
     // console.log(stringToArray.search('bor'))
   return (
-    <input {...inputProps} className={renderClassNamesConditionally(className, 'border w-[323px]  h-[45px] p-3 outline-none rounded-[16px] bg-[#D9D9D9]')} />
+    <input {...inputProps} className={renderClassNamesConditionally(className, 'border w-[323px]  h-[45px] p-3 outline-none rounded-[16px] bg-[#D9D9D9]')} {...register(name)} />
   )
 }
 

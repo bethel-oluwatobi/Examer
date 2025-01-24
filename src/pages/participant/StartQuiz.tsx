@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form"
 import { IconsCmp } from "../../components/IconsCmp"
 import { Button } from "../../design_system/components/ui/Button"
-import Input from "../../design_system/components/ui/Input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { LabelAndErrorCmp } from "../../design_system/app/form/FormInput/LabelAndErrorCmp"

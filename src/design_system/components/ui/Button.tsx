@@ -4,12 +4,13 @@ import { renderClassNamesConditionally } from "../../../utils/conditionallyRende
 
 interface IProps{
     children: React.ReactNode
-    className?:string
+    className?: string
+    onClick?:()=>void
 }
 
-export const Button = ({className, children}:IProps) => {
+export const Button = ({className, children, onClick}:IProps) => {
     return (
-        <button className={renderClassNamesConditionally(className, 'w-full mt-5 h-[52px] rounded-[16px] font-semibold text-[20px] text-[#FFFFFF]   bg-[#28A745]')}>
+        <button onClick={onClick} className={renderClassNamesConditionally(className, 'w-full mt-5 h-[52px] rounded-[16px] font-semibold text-[20px] text-[#FFFFFF]   bg-[#28A745]')}>
             { children }  
         </button>
 

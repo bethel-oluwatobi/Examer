@@ -1,6 +1,6 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form"
 
-type InputType = 'text' | 'email' | 'radio'
+export type InputType = 'text' | 'email' | 'radio'
 
 
 export interface IFormConfig  {

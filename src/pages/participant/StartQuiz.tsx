@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form"
 import { IconsCmp } from "../../components/IconsCmp"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { FormSchema } from "../../components/FormSchema/FormSchema"
+import { Fields, FormSchema } from "../../components/FormSchema/FormSchema"
 
 const QuizInstructionCmp = () => {
 
@@ -29,7 +29,7 @@ type TStartQuizDetails = {
 const startQuizSchema = z.object({
   fullname:z.string().min(1)
 })
-const START_QUIZ_FIELD = [ { name: 'fullname', type: "text",} ]
+const START_QUIZ_FIELD:[Fields] = [ { name: 'fullname', type: "text",} ]
 
 export const StartQuiz = () => {
  // todo understand the schema buikder so i can use it to my requirement

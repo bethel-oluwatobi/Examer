@@ -1,9 +1,8 @@
 import { useForm } from "react-hook-form"
 import { IconsCmp } from "../../components/IconsCmp"
-import { Button } from "../../design_system/components/ui/Button"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { LabelAndErrorCmp } from "../../design_system/app/form/FormInput/LabelAndErrorCmp"
+import { FormSchema } from "../../components/FormSchema/FormSchema"
 
 const QuizInstructionCmp = () => {
 
@@ -30,6 +29,7 @@ type TStartQuizDetails = {
 const startQuizSchema = z.object({
   fullname:z.string().min(1)
 })
+const START_QUIZ_FIELD = [ { name: 'fullname', type: "text",} ]
 
 export const StartQuiz = () => {
  // todo understand the schema buikder so i can use it to my requirement
@@ -39,6 +39,7 @@ export const StartQuiz = () => {
   const submit = (data:TStartQuizDetails)=> {
      console.log(data)
   }
+ 
 
   return (
     <div className="flex flex-col items-ceneter gap-10 pt-10">
@@ -47,11 +48,7 @@ export const StartQuiz = () => {
         <h1 className="font-bold  text-[24px] align-middle  text-center text-balance">Welcome To Sunday School Quiz</h1>
         <IconsCmp icon="circleUserIcon" height="84" width="84" />
         <p className="font-semibold text-[20px] text-center text-balance text-[#6C757D]">Promotion Examination</p>
-        <form onSubmit={handleSubmit(submit)}>
-          <LabelAndErrorCmp errors={errors} name="fullname" register={register} type="text" />
-          {/* we need to add a dropshadow to this text */}
-          <Button>Start quiz</Button>
-        </form>
+       <FormSchema error={errors} fields={START_QUIZ_FIELD} register={register} submit={handleSubmit(submit)} />
       </div>
       {/* footer or instructions sections */ }
       <div className="flex items-center flex-col gap-5 ">

@@ -15,11 +15,15 @@ interface IProps {
 
 
 const Input = ({ ...inputProps }: IProps) => {
-    const {className, register, name} =  inputProps
+    const {className, register, name, type} =  inputProps
     // const stringToArray = '1px border'
-    // console.log(stringToArray.search('bor'))
+  // console.log(stringToArray.search('bor'))
   return (
-    <input {...inputProps} className={renderClassNamesConditionally(className, 'border w-[323px]  h-[45px] p-3 outline-none rounded-[16px] bg-[#D9D9D9]')} {...register(name)} />
+    <input
+      type={type}
+      className={ renderClassNamesConditionally(className, 'border w-[323px]  h-[45px] p-3 outline-none rounded-[16px] bg-[#D9D9D9]') }
+      { ...register(name) }
+    />
   )
 }
 

@@ -35,7 +35,7 @@ const startQuizSchema = z.object({
 })
 
 const START_QUIZ_FIELD:[Fields] = [ { name: 'fullname', type: "text",} ]
-const STORAGE_KEY = 'Partiipant-Details'
+export const STORAGE_KEY = 'Partiipant-Details'
 
 export const StartQuizView = () => {
     const { handleSubmit, register, formState: { errors } } = useForm<TStartQuizDetails>({ resolver: zodResolver(startQuizSchema) })

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { ParticipantLayouts } from "../../layouts/participants/ParticipantLayouts"
 import { Storage } from "../../lib/stoarge"
 import { NAV_LINKS } from "../../shared/participants/constants"
+import { STORAGE_KEY } from "../../view/participants/StartQuizView"
 
 
 const exams = [
@@ -111,15 +112,26 @@ export const Questions = () => {
     
     const optionChoosen = [ exams[ selcetedOption ] ]
     Storage.save(QUESTION_STORAGE_KEY, JSON.stringify([ ...optionChoosen ]))   
-    console.log(exams.length, questionCount)
+
     if (exams.length < questionCount + 1) navigate(NAV_LINKS.result)
-    
-    setQuestionCount((prev) => prev + 1)
-    setSelectedOption(undefined)
-    }
+      setQuestionCount((prev) => prev + 1)
+      setSelectedOption(undefined)
+  }
+  
+  const previousQuestion = () => {
+    setQuestionCount((prev)=> prev - 1)
+  }
 
   // console.log(pathname)
 
+
+  useEffect(() => { 
+    if (typeof window != 'undefined')
+    {
+      const userDetails = Storage.get(STORAGE_KEY)
+      if(!userDetails) navigate(NAV_LINKS.startQuiz)
+    }
+  },[typeof window])
 
 
   useEffect(() => {
@@ -138,8 +150,11 @@ export const Questions = () => {
           optionAnswer={ option.optionsAnswer }
           correctOption={ option.correct } key={ index }
         />
-        )) }
+      )) }
+      <div className="flex items-center gap-5">
+        <Button onClick={previousQuestion} >Back</Button>
         <Button onClick={nextQuestion} >Next</Button>
+      </div>
     </ParticipantLayouts>
 
   )

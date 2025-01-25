@@ -1,122 +1,43 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "../../design_system/components/ui/Button"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { ParticipantLayouts } from "../../layouts/participants/ParticipantLayouts"
 import { Storage } from "../../lib/stoarge"
-import { NAV_LINKS } from "../../shared/participants/constants"
+import { exams, NAV_LINKS, STORAGE_KEYS, TExams } from "../../shared/participants/constants"
 import { STORAGE_KEY } from "../../view/participants/StartQuizView"
+import { OptionsCmp } from "../../components/Participants/Questions/OptionCmp"
 
 
-const exams = [
-  {
-  questions: 'who Gave birth to Jesus',
-  options: [ {
-      optionLetter: 'A',
-      optionsAnswer: 'hannah',
-    },
-      {
-      optionLetter: 'B',
-      optionsAnswer: 'mary',
-      correct:true
-    },{
-      optionLetter: 'C',
-      optionsAnswer: 'jacob',
-    },{
-      optionLetter: 'D',
-      optionsAnswer: 'david',
-    },
-       ]
-},
-  {
-  questions: 'who Gave birth to Jesus',
- options: [ {
-      optionLetter: 'A',
-      optionsAnswer: 'hannah',
-    },
-      {
-      optionLetter: 'B',
-      optionsAnswer: 'mary',
-      correct:true
-      
-    },{
-      optionLetter: 'C',
-      optionsAnswer: 'jacob',
-    },{
-      optionLetter: 'D',
-      optionsAnswer: 'david',
-    },
-       ]
-  },
-  {
-  questions: 'who is joseph Father',
-    options: [ {
-      optionLetter: 'A',
-      optionsAnswer: 'hannah',
-    },
-      {
-      optionLetter: 'B',
-      optionsAnswer: 'mary',      
-    },{
-      optionLetter: 'C',
-      optionsAnswer: 'jacob',
-      correct:true      
-    },{
-      optionLetter: 'D',
-      optionsAnswer: 'david',
-    },
-       ]
-  }
-]
-
-// type TExams = typeof exams
+// i want to be able to naviagate between question
+// i want it to replace or set the url id to the number of question in the array
+// i want it to naviagate to the result page if the questionCount <= exams.length
 
 
-interface IProps {
-  index: number,
-  optionAnswer: string
-  optionLetter: string
-  correctOption?: boolean
-  selcetedOption: number | undefined
-  setSelectedOption:(value:number)=>void
-}
 
-const OptionsCmp = ({index, optionAnswer, optionLetter, correctOption, selcetedOption,setSelectedOption}:IProps) => {
-
-  
-  const optionsSelect = (index: number) => {
-    setSelectedOption(index)
-  }
-  return (
-    <div key={index} onClick={ () => optionsSelect(index) } className={` flex items-center gap-5  ${selcetedOption === index ?'bg-blue-400' : 'bg-white'}`}>
-      <p>{optionLetter}</p>
-      <p >{optionAnswer}</p>
-    </div>
-  )
-}
 
 export const Questions = () => {
+  // an hook would be needed
   const param = useParams()
-  if (!param.id)
-    {
-      return
-    }
-  const id = parseInt(param.id)
-  const [ questionCount, setQuestionCount ] = useState(id)
-  const [selcetedOption, setSelectedOption] = useState<number>()
-  // const pathname = useResolvedPath()
-  const navigate =  useNavigate()
-  const QUESTION_STORAGE_KEY = 'QUESTION_KEY' as const
-  
-  const nextQuestion = () => {
-    if (selcetedOption === undefined) return
-    
-    const optionChoosen = [ exams[ selcetedOption ] ]
-    Storage.save(QUESTION_STORAGE_KEY, JSON.stringify([ ...optionChoosen ]))   
 
-    if (exams.length < questionCount + 1) navigate(NAV_LINKS.result)
-      setQuestionCount((prev) => prev + 1)
-      setSelectedOption(undefined)
-  }
+  if (!param.id) return
+  const intialIndex = parseInt(param.id) - 1
+    
+  const [ questionCount, setQuestionCount ] = useState(intialIndex)
+  const [ selcetedOption, setSelectedOption ] = useState<number>()
+  // const pathname = useResolvedPath()
+  const navigate = useNavigate()
+  
+  useEffect(() => { 
+    if (typeof window != 'undefined')
+    {
+      const userDetails = Storage.get(STORAGE_KEY)
+      if(!userDetails) navigate(NAV_LINKS.startQuiz)
+    }
+  },[navigate])
+
+  
+  
+  const nextQuestion = useCallback(()=>{setQuestionCount((prev)=>prev+1)}, [questionCount])
   
   const previousQuestion = () => {
     setQuestionCount((prev)=> prev - 1)
@@ -125,13 +46,6 @@ export const Questions = () => {
   // console.log(pathname)
 
 
-  useEffect(() => { 
-    if (typeof window != 'undefined')
-    {
-      const userDetails = Storage.get(STORAGE_KEY)
-      if(!userDetails) navigate(NAV_LINKS.startQuiz)
-    }
-  },[typeof window])
 
 
   useEffect(() => {

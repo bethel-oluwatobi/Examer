@@ -33,6 +33,7 @@ export const Questions = () => {
   const questionLength =  exams.length - 1
   
   const isAtFirstQuestion = questionCount <= intialIndex
+  const isAtLastQuestion = questionCount === questionLength
   
   useEffect(() => { 
     if (typeof window != 'undefined')
@@ -80,8 +81,8 @@ export const Questions = () => {
         />
       )) }
       <div className="flex items-center gap-5">
-        <Button onClick={previousQuestion}  isDisable={isAtFirstQuestion} >Back</Button>
-        <Button onClick={nextQuestion}  >Next</Button>
+        <Button onClick={previousQuestion}  isDisable={isAtFirstQuestion} >back</Button>
+        <Button onClick={ nextQuestion }  >{ isAtLastQuestion ? 'submit' : 'next'}</Button>
       </div>
     </ParticipantLayouts>
 

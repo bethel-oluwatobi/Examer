@@ -10,7 +10,9 @@ import { OptionsCmp } from "../../components/Participants/Questions/OptionCmp"
 
 // i want to be able to naviagate between question
 // i want it to replace or set the url id to the number of question in the array
-// i want it to naviagate to the result page if the questionCount <= exams.length
+// i want it to navigate to the result page if the questionCount <= exams.length i want to be able to change the next to submit button.
+//  i want to disable the previous button when the the questionCount is less than or equal to 0
+
 
 
 
@@ -20,12 +22,17 @@ export const Questions = () => {
   const param = useParams()
 
   if (!param.id) return
+  
   const intialIndex = parseInt(param.id) - 1
-    
+  
   const [ questionCount, setQuestionCount ] = useState(intialIndex)
   const [ selcetedOption, setSelectedOption ] = useState<number>()
   // const pathname = useResolvedPath()
   const navigate = useNavigate()
+  
+  const questionLength =  exams.length - 1
+  
+  const isAtFirstQuestion = questionCount <= intialIndex
   
   useEffect(() => { 
     if (typeof window != 'undefined')
@@ -37,11 +44,18 @@ export const Questions = () => {
 
   
   
-  const nextQuestion = useCallback(()=>{setQuestionCount((prev)=>prev+1)}, [questionCount])
+  const nextQuestion = useCallback(() => {
+    if (questionCount >= questionLength)
+    {
+      navigate(NAV_LINKS.result)
+    }
+    setQuestionCount((prev) => prev + 1)
+  }, [ questionCount ])
   
-  const previousQuestion = () => {
+  const previousQuestion = useCallback(() => {
     setQuestionCount((prev)=> prev - 1)
-  }
+  } 
+  , [questionCount])
 
   // console.log(pathname)
 
@@ -51,11 +65,11 @@ export const Questions = () => {
   useEffect(() => {
   }, [nextQuestion])
 
-  if(!exams[questionCount -1]) return
+  if(!exams[questionCount]) return
   return (
     <ParticipantLayouts>
-        <h1>{ exams[questionCount-1].questions}</h1>
-      { exams[ questionCount - 1 ].options.map((option, index) => (
+        <h1>{ exams[questionCount].questions}</h1>
+      { exams[ questionCount ].options.map((option, index) => (
         <OptionsCmp
           index={ index }
           optionLetter={ option.optionLetter }
@@ -66,8 +80,8 @@ export const Questions = () => {
         />
       )) }
       <div className="flex items-center gap-5">
-        <Button onClick={previousQuestion} >Back</Button>
-        <Button onClick={nextQuestion} >Next</Button>
+        <Button onClick={previousQuestion}  isDisable={isAtFirstQuestion} >Back</Button>
+        <Button onClick={nextQuestion}  >Next</Button>
       </div>
     </ParticipantLayouts>
 

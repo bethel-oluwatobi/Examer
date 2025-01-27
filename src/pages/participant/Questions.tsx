@@ -22,11 +22,11 @@ export const useGetParticipantSession = () => {
   
   useEffect(() => { 
       const userDetails = Storage.get(STORAGE_KEY)
-    if (userDetails)
+    if (!userDetails)
     {
-      setParticipant(userDetails)
+      navigate(NAV_LINKS.startQuiz)
     }
-    navigate(NAV_LINKS.startQuiz)
+    setParticipant(userDetails)
   }, [ navigate ])
   return participant
 }
@@ -41,61 +41,74 @@ export const Questions = () => {
 
   // proper prasing and validation of id
   const id = parseInt(paramId || '0', 10 )
-  if (id <= 0 || id < exams.length)
+  if (id < 1 || id > exams.length)
   {
     return
   }
   
+
   
-  console.log(id)
-  const [ questionCount, setQuestionCount ] = useState(id-1)
+  // this design can be used for multiple forms
+  const [ questionIndex, setQuestionIndex ] = useState(id-1)
   const [ selcetedOption, setSelectedOption ] = useState<number>()
   
   const questionLength =  exams.length - 1
-  const isAtFirstQuestion = questionCount <= 0
-  const isAtLastQuestion = questionCount === questionLength
+  const isAtFirstQuestion = questionIndex <= 0
+  const isAtLastQuestion = questionIndex === questionLength
   
 
 
   
-  
-  const nextQuestion = useCallback(() => {
-    if (questionCount >= questionLength)
+  const handleNavigation = (step:number) => {
+    const newIndex = questionIndex + step
+    if (newIndex >= 0 && newIndex < exams.length)
+    {
+      setQuestionIndex(newIndex)
+      navigate(`/id/questions/${newIndex + 1}`);
+      
+    } else if (newIndex === exams.length)
     {
       navigate(NAV_LINKS.result)
-      return
     }
-    setQuestionCount((prev) => prev + 1)
-    navigate(`/id/questions/${id + 1}`)
-  }, [ questionCount ])
+  }
   
-  const previousQuestion = useCallback(() => {
-    setQuestionCount((prev)=> prev - 1)
-    navigate(`/id/questions/${id - 1}`)
-  } 
-  , [questionCount])
+  // const nextQuestion = useCallback(() => {
+  //   if (questionCount >= questionLength)
+  //   {
+  //     navigate(NAV_LINKS.result)
+  //     return
+  //   }
+  //   setQuestionCount((prev) => prev + 1)
+  //   navigate(`/id/questions/${id + 1}`)
+  // }, [ questionCount ])
+  
+  // const previousQuestion = useCallback(() => {
+  //   setQuestionCount((prev)=> prev - 1)
+  //   navigate(`/id/questions/${id - 1}`)
+  // } 
+  // , [questionCount])
 
   // console.log(pathname)
 
 
-  if (!exams[ questionCount ]) return
+  const currentQuestion = exams[questionIndex]
   
   return (
     <ParticipantLayouts>
-        <h1>{ exams[questionCount].questions}</h1>
-      { exams[ questionCount ].options.map((option, index) => (
+        <h1>{ currentQuestion.questions}</h1>
+      { currentQuestion.options.map((option, index) => (
         <OptionsCmp
           index={ index }
-          optionLetter={ option.optionLetter }
+          optionLetter={ option.id }
           selcetedOption={ selcetedOption }
           setSelectedOption={ setSelectedOption }
-          optionAnswer={ option.optionsAnswer }
-          correctOption={ option.correct } key={ index }
+          optionAnswer={ option.answer }
+          correctOption={ currentQuestion.correctOption } key={ index }
         />
       )) }
       <div className="flex items-center gap-5">
-        <Button onClick={previousQuestion}  isDisable={isAtFirstQuestion} >back</Button>
-        <Button onClick={ nextQuestion }  >{ isAtLastQuestion ? 'submit' : 'next'}</Button>
+        <Button onClick={()=> handleNavigation(-1)}  isDisable={isAtFirstQuestion} >back</Button>
+        <Button onClick={ ()=>handleNavigation(1) }  >{ isAtLastQuestion ? 'submit' : 'next'}</Button>
       </div>
     </ParticipantLayouts>
 

@@ -50,7 +50,7 @@ export const Questions = () => {
   
   // this design can be used for multiple forms
   const [ questionIndex, setQuestionIndex ] = useState(id-1)
-  const [ selcetedOption, setSelectedOption ] = useState<number>()
+  const [ selcetedOption, setSelectedOption ] = useState<number | null>(null)
   
   const questionLength =  exams.length - 1
   const isAtFirstQuestion = questionIndex <= 0
@@ -58,14 +58,18 @@ export const Questions = () => {
   
 
 
-  
-  const handleNavigation = (step:number) => {
+  // this is an amazing navigation of a page form 
+  // it's like we are switching page but we are not making the state updates permenant updating the url path using arrays 
+  // Amazing stuff thank you jesus
+
+  const handleNavigation = (step: number) => {
+    
     const newIndex = questionIndex + step
-    if (newIndex >= 0 && newIndex < exams.length)
+    if (selcetedOption !== null && (newIndex >= 0 && newIndex < exams.length) )  
     {
       setQuestionIndex(newIndex)
-      navigate(`/id/questions/${newIndex + 1}`);
-      
+      navigate(`/id/questions/${ newIndex + 1 }`);
+      setSelectedOption(null)  
     } else if (newIndex === exams.length)
     {
       navigate(NAV_LINKS.result)

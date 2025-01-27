@@ -15,33 +15,41 @@ import { OptionsCmp } from "../../components/Participants/Questions/OptionCmp"
 
 
 
+export const useGetParticipantSession = () => {
+  
+  const [participant, setParticipant] =  useState()
+  const navigate = useNavigate()
+  
+  useEffect(() => { 
+      const userDetails = Storage.get(STORAGE_KEY)
+    if (userDetails)
+    {
+      setParticipant(userDetails)
+    }
+    navigate(NAV_LINKS.startQuiz)
+  }, [ navigate ])
+  return participant
+}
 
 
 export const Questions = () => {
   // an hook would be needed
   const param = useParams()
-
+  const navigate = useNavigate()
+  const participant =  useGetParticipantSession()
   if (!param.id) return
+  const id = parseInt(param.id)
+  const intialIndex = id - 1
   
-  const intialIndex = parseInt(param.id) - 1
-  
+  console.log(id)
   const [ questionCount, setQuestionCount ] = useState(intialIndex)
   const [ selcetedOption, setSelectedOption ] = useState<number>()
-  // const pathname = useResolvedPath()
-  const navigate = useNavigate()
   
   const questionLength =  exams.length - 1
-  
-  const isAtFirstQuestion = questionCount <= intialIndex
+  const isAtFirstQuestion = questionCount <= 0
   const isAtLastQuestion = questionCount === questionLength
   
-  useEffect(() => { 
-    if (typeof window != 'undefined')
-    {
-      const userDetails = Storage.get(STORAGE_KEY)
-      if(!userDetails) navigate(NAV_LINKS.startQuiz)
-    }
-  },[navigate])
+
 
   
   
@@ -49,24 +57,23 @@ export const Questions = () => {
     if (questionCount >= questionLength)
     {
       navigate(NAV_LINKS.result)
+      return
     }
     setQuestionCount((prev) => prev + 1)
+    navigate(`/id/questions/${id + 1}`)
   }, [ questionCount ])
   
   const previousQuestion = useCallback(() => {
     setQuestionCount((prev)=> prev - 1)
+    navigate(`/id/questions/${id - 1}`)
   } 
   , [questionCount])
 
   // console.log(pathname)
 
 
-
-
-  useEffect(() => {
-  }, [nextQuestion])
-
-  if(!exams[questionCount]) return
+  if (!exams[ questionCount ]) return
+  
   return (
     <ParticipantLayouts>
         <h1>{ exams[questionCount].questions}</h1>

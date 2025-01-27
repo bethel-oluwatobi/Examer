@@ -11,71 +11,46 @@ export const STORAGE_KEYS = {
 }
 
 export type TExams = {
+    id: number
     questions: string;
     options: ({
         optionLetter: string;
         optionsAnswer: string;
-        correct?: boolean;
     })[];
 }[]
 
 export const exams = [
     {
+        id: 1,
         questions: 'who Gave birth to Jesus',
-        options: [ {
-            optionLetter: 'A',
-            optionsAnswer: 'hannah',
-        },
-        {
-            optionLetter: 'B',
-            optionsAnswer: 'mary',
-            correct: true
-        }, {
-            optionLetter: 'C',
-            optionsAnswer: 'jacob',
-        }, {
-            optionLetter: 'D',
-            optionsAnswer: 'david',
-        },
-        ]
+        options: [
+            { id: 'A', answer: 'hannah', },
+            { id: 'B', answer: 'mary', },
+            { id: 'C', answer: 'jacob', },
+            { id: 'D', answer: 'david', },
+        ],
+        correctOption: 'B'
     },
     {
+        id: 1,
         questions: 'who Gave birth to Jesus',
-        options: [ {
-            optionLetter: 'A',
-            optionsAnswer: 'hannah',
-        },
-        {
-            optionLetter: 'B',
-            optionsAnswer: 'mary',
-            correct: true
-
-        }, {
-            optionLetter: 'C',
-            optionsAnswer: 'jacob',
-        }, {
-            optionLetter: 'D',
-            optionsAnswer: 'david',
-        },
-        ]
+        options: [
+            { id: 'A', answer: 'hannah', },
+            { id: 'B', answer: 'mary', },
+            { id: 'C', answer: 'jacob', },
+            { id: 'D', answer: 'david', },
+        ],
+        correctOption: 'B'
     },
     {
-        questions: 'who is joseph Father',
-        options: [ {
-            optionLetter: 'A',
-            optionsAnswer: 'hannah',
-        },
-        {
-            optionLetter: 'B',
-            optionsAnswer: 'mary',
-        }, {
-            optionLetter: 'C',
-            optionsAnswer: 'jacob',
-            correct: true
-        }, {
-            optionLetter: 'D',
-            optionsAnswer: 'david',
-        },
-        ]
-    }
-] as TExams
+        id: 1,
+        questions: 'who Gave birth to Jesus',
+        options: [
+            { id: 'A', answer: 'hannah', },
+            { id: 'B', answer: 'mary', },
+            { id: 'C', answer: 'jacob', },
+            { id: 'D', answer: 'david', },
+        ],
+        correctOption: 'B'
+    },
+] as const

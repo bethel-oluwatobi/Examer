@@ -34,15 +34,21 @@ export const useGetParticipantSession = () => {
 
 export const Questions = () => {
   // an hook would be needed
-  const param = useParams()
+  const {id:paramId} = useParams()
   const navigate = useNavigate()
-  const participant =  useGetParticipantSession()
-  if (!param.id) return
-  const id = parseInt(param.id)
-  const intialIndex = id - 1
+  const participant = useGetParticipantSession()
+  
+
+  // proper prasing and validation of id
+  const id = parseInt(paramId || '0', 10 )
+  if (id <= 0 || id < exams.length)
+  {
+    return
+  }
+  
   
   console.log(id)
-  const [ questionCount, setQuestionCount ] = useState(intialIndex)
+  const [ questionCount, setQuestionCount ] = useState(id-1)
   const [ selcetedOption, setSelectedOption ] = useState<number>()
   
   const questionLength =  exams.length - 1

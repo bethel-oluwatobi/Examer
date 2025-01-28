@@ -32,7 +32,7 @@ export const exams = [
         correctOption: 'B'
     },
     {
-        id: 1,
+        id: 2,
         questions: 'who Gave birth to Jesus',
         options: [
             { id: 'A', answer: 'hannah', },
@@ -43,7 +43,7 @@ export const exams = [
         correctOption: 'B'
     },
     {
-        id: 1,
+        id: 3,
         questions: 'who Gave birth to Jesus',
         options: [
             { id: 'A', answer: 'hannah', },

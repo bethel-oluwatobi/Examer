@@ -32,15 +32,25 @@ export const useGetParticipantSession = () => {
 }
 
 
+const useSaveToLocalStorage = () => {
+  const [ questionDetailsInStorage, setQuestionDetailsInStorage ] = useState<any[] | null>(
+    Storage.get(STORAGE_KEYS.questionStorage) ? Storage.get(STORAGE_KEYS.questionStorage) : null
+  ) 
+
+  useEffect(() => {
+    Storage.save(STORAGE_KEYS.questionStorage, questionDetailsInStorage)
+  }, [questionDetailsInStorage])
+  return setQuestionDetailsInStorage
+}
 export const Questions = () => {
   // an hook would be needed
-  const {id:paramId} = useParams()
+  const { id: paramId } = useParams()
   const navigate = useNavigate()
   const participant = useGetParticipantSession()
-  
+  const setQuestionDetailsInStorage = useSaveToLocalStorage()
 
   // proper prasing and validation of id
-  const id = parseInt(paramId || '0', 10 )
+  const id = parseInt(paramId || '0', 10)
   if (id < 1 || id > exams.length)
   {
     return
@@ -49,10 +59,11 @@ export const Questions = () => {
 
   
   // this design can be used for multiple forms
-  const [ questionIndex, setQuestionIndex ] = useState(id-1)
+  const [ questionIndex, setQuestionIndex ] = useState(id - 1)
   const [ selcetedOption, setSelectedOption ] = useState<number | null>(null)
   
-  const questionLength =  exams.length - 1
+  
+  const questionLength = exams.length - 1
   const isAtFirstQuestion = questionIndex <= 0
   const isAtLastQuestion = questionIndex === questionLength
   
@@ -61,40 +72,42 @@ export const Questions = () => {
   // this is an amazing navigation of a page form 
   // it's like we are switching page but we are not making the state updates permenant updating the url path using arrays 
   // Amazing stuff thank you jesus
+  
+  // on navigate i want to store the question object and the answer choosen 
+  // in an array then send them to the localstorage
+  // we have a state which says data to store in localStorage 
+  // then we would append the data to be stored with the 
+  // questions details and the answer choosen by the user
+  //  create a function Save To LocalStoarage
+
+  
+
+  
+  const saveToLocalStorage = () => {
+      const newObject = {
+        questionId: exams[ questionIndex ].id,
+        userAnswer: selcetedOption && exams[questionIndex].options[selcetedOption].id
+    }
+    setQuestionDetailsInStorage((prev) => prev ? [ ...prev, ...[ newObject ] ] : [ newObject ])
+    return
+  }
 
   const handleNavigation = (step: number) => {
     
     const newIndex = questionIndex + step
-    if (selcetedOption !== null && (newIndex >= 0 && newIndex < exams.length) )  
+    if ( newIndex >= 0 && newIndex < exams.length )  
     {
       setQuestionIndex(newIndex)
+      saveToLocalStorage()
       navigate(`/id/questions/${ newIndex + 1 }`);
       setSelectedOption(null)  
     } else if (newIndex === exams.length)
     {
+      saveToLocalStorage()
       navigate(NAV_LINKS.result)
     }
   }
   
-  // const nextQuestion = useCallback(() => {
-  //   if (questionCount >= questionLength)
-  //   {
-  //     navigate(NAV_LINKS.result)
-  //     return
-  //   }
-  //   setQuestionCount((prev) => prev + 1)
-  //   navigate(`/id/questions/${id + 1}`)
-  // }, [ questionCount ])
-  
-  // const previousQuestion = useCallback(() => {
-  //   setQuestionCount((prev)=> prev - 1)
-  //   navigate(`/id/questions/${id - 1}`)
-  // } 
-  // , [questionCount])
-
-  // console.log(pathname)
-
-
   const currentQuestion = exams[questionIndex]
   
   return (

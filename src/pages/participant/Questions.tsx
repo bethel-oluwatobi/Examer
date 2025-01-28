@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { Button } from "../../design_system/components/ui/Button"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { ParticipantLayouts } from "../../layouts/participants/ParticipantLayouts"
 import { Storage } from "../../lib/stoarge"
-import { exams, NAV_LINKS, STORAGE_KEYS, TExams } from "../../shared/participants/constants"
+import { exams, NAV_LINKS, STORAGE_KEYS } from "../../shared/participants/constants"
 import { STORAGE_KEY } from "../../view/participants/StartQuizView"
 import { OptionsCmp } from "../../components/Participants/Questions/OptionCmp"
 

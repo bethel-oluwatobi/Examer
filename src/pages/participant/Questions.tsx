@@ -14,6 +14,13 @@ import { OptionsCmp } from "../../components/Participants/Questions/OptionCmp"
 //  i want to disable the previous button when the the questionCount is less than or equal to 0
 
 
+type TOptions = 'A' | 'B' | 'C' |'D';
+
+type TQuestionStored = {
+    questionId: number;
+    userAnswer: TOptions | null;
+}
+
 
 export const useGetParticipantSession = () => {
   
@@ -32,22 +39,42 @@ export const useGetParticipantSession = () => {
 }
 
 
-const useSaveToLocalStorage = () => {
-  const [ questionDetailsInStorage, setQuestionDetailsInStorage ] = useState<any[] | null>(
+const useQuestionLocalStorage = () => {
+  const [ questionDetailsInStorage, setQuestionDetailsInStorage ] = useState<TQuestionStored[] | null>(
     Storage.get(STORAGE_KEYS.questionStorage) ? Storage.get(STORAGE_KEYS.questionStorage) : null
   ) 
 
+const saveToLocalStorage = (questionId:number, answer:TOptions | null) => {
+
+  if (!answer) return
+  
+  setQuestionDetailsInStorage((prev) => {
+    if (!prev) return [ { questionId:questionId,  userAnswer:answer } ]
+    
+    const existingAnswer = prev.findIndex((question)=> question.questionId === questionId )
+    
+    if (existingAnswer > -1)
+    {
+      const updateQuestionDetails = [ ...prev ]
+      updateQuestionDetails[ existingAnswer ].userAnswer = answer
+      return updateQuestionDetails
+    }
+    return [...prev, {questionId:questionId, userAnswer:answer}]
+  })
+  }
+  
+
   useEffect(() => {
     Storage.save(STORAGE_KEYS.questionStorage, questionDetailsInStorage)
-  }, [questionDetailsInStorage])
-  return setQuestionDetailsInStorage
+  }, [questionDetailsInStorage, setQuestionDetailsInStorage])
+  return saveToLocalStorage
 }
 export const Questions = () => {
   // an hook would be needed
   const { id: paramId } = useParams()
   const navigate = useNavigate()
   const participant = useGetParticipantSession()
-  const setQuestionDetailsInStorage = useSaveToLocalStorage()
+  const saveToLocalStorage = useQuestionLocalStorage()
 
   // proper prasing and validation of id
   const id = parseInt(paramId || '0', 10)
@@ -83,27 +110,20 @@ export const Questions = () => {
   
 
   
-  const saveToLocalStorage = () => {
-      const newObject = {
-        questionId: exams[ questionIndex ].id,
-        userAnswer: selcetedOption && exams[questionIndex].options[selcetedOption].id
-    }
-    setQuestionDetailsInStorage((prev) => prev ? [ ...prev, ...[ newObject ] ] : [ newObject ])
-    return
-  }
+  
 
   const handleNavigation = (step: number) => {
     
-    const newIndex = questionIndex + step
+    const newIndex = questionIndex + step    
     if ( newIndex >= 0 && newIndex < exams.length )  
     {
       setQuestionIndex(newIndex)
-      saveToLocalStorage()
+      saveToLocalStorage(exams[questionIndex].id, selcetedOption !== null ? exams[questionIndex].options[selcetedOption].id : null)
       navigate(`/id/questions/${ newIndex + 1 }`);
       setSelectedOption(null)  
     } else if (newIndex === exams.length)
     {
-      saveToLocalStorage()
+      saveToLocalStorage(exams[questionIndex].id, selcetedOption !== null ? exams[questionIndex].options[selcetedOption].id : null)
       navigate(NAV_LINKS.result)
     }
   }

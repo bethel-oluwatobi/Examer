@@ -4,8 +4,9 @@ import { useEffect, useState } from "react"
 import { ParticipantLayouts } from "../../layouts/participants/ParticipantLayouts"
 import { Storage } from "../../lib/stoarge"
 import { exams, NAV_LINKS, STORAGE_KEYS } from "../../shared/participants/constants"
-import { STORAGE_KEY } from "../../view/participants/StartQuizView"
 import { OptionsCmp } from "../../components/Participants/Questions/OptionCmp"
+import { useGetParticipantSession } from "../../hooks/participant-hooks/useGetParticipantSession"
+import { useQuestionLocalStorage } from "../../hooks/participant-hooks/useQuestionLocalStorage"
 
 
 // i want to be able to naviagate between question
@@ -14,67 +15,23 @@ import { OptionsCmp } from "../../components/Participants/Questions/OptionCmp"
 //  i want to disable the previous button when the the questionCount is less than or equal to 0
 
 
-type TOptions = 'A' | 'B' | 'C' |'D';
+export type TOptions = 'A' | 'B' | 'C' |'D';
 
-type TQuestionStored = {
+export type TQuestionStored = {
     questionId: number;
     userAnswer: TOptions | null;
 }
 
 
-export const useGetParticipantSession = () => {
-  
-  const [participant, setParticipant] =  useState()
-  const navigate = useNavigate()
-  
-  useEffect(() => { 
-      const userDetails = Storage.get(STORAGE_KEY)
-    if (!userDetails)
-    {
-      navigate(NAV_LINKS.startQuiz)
-    }
-    setParticipant(userDetails)
-  }, [ navigate ])
-  return participant
-}
 
 
-const useQuestionLocalStorage = () => {
-  const [ questionDetailsInStorage, setQuestionDetailsInStorage ] = useState<TQuestionStored[] | null>(
-    Storage.get(STORAGE_KEYS.questionStorage) ? Storage.get(STORAGE_KEYS.questionStorage) : null
-  ) 
 
-const saveToLocalStorage = (questionId:number, answer:TOptions | null) => {
-
-  if (!answer) return
-  
-  setQuestionDetailsInStorage((prev) => {
-    if (!prev) return [ { questionId:questionId,  userAnswer:answer } ]
-    
-    const existingAnswer = prev.findIndex((question)=> question.questionId === questionId )
-    
-    if (existingAnswer > -1)
-    {
-      const updateQuestionDetails = [ ...prev ]
-      updateQuestionDetails[ existingAnswer ].userAnswer = answer
-      return updateQuestionDetails
-    }
-    return [...prev, {questionId:questionId, userAnswer:answer}]
-  })
-  }
-  
-
-  useEffect(() => {
-    Storage.save(STORAGE_KEYS.questionStorage, questionDetailsInStorage)
-  }, [questionDetailsInStorage, setQuestionDetailsInStorage])
-  return saveToLocalStorage
-}
 export const Questions = () => {
   // an hook would be needed
   const { id: paramId } = useParams()
   const navigate = useNavigate()
   const participant = useGetParticipantSession()
-  const saveToLocalStorage = useQuestionLocalStorage()
+  const { saveToLocalStorage } = useQuestionLocalStorage()
 
   // proper prasing and validation of id
   const id = parseInt(paramId || '0', 10)

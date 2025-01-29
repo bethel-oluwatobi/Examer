@@ -4,7 +4,7 @@ import { IconsCmp } from "../../components/IconsCmp"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Storage } from "../../lib/stoarge"
-import { NAV_LINKS } from "../../shared/participants/constants"
+import { NAV_LINKS, STORAGE_KEYS } from "../../shared/participants/constants"
 import { z } from "zod"
 
 
@@ -34,17 +34,19 @@ const startQuizSchema = z.object({
   fullname:z.string().min(1)
 })
 
-const START_QUIZ_FIELD:[Fields] = [ { name: 'fullname', type: "text",} ]
-export const STORAGE_KEY = 'Partiipant-Details'
+const START_QUIZ_FIELD: [ Fields ] = [ { name: 'fullname', type: "text", } ]
+
+// add button to change details
 
 export const StartQuizView = () => {
-    const { handleSubmit, register, formState: { errors } } = useForm<TStartQuizDetails>({ resolver: zodResolver(startQuizSchema) })
-    const naviagate = useNavigate()
+  const { handleSubmit, register, formState: { errors } } = useForm<TStartQuizDetails>({ resolver: zodResolver(startQuizSchema) })
+  const naviagate = useNavigate()
+  
    
-    const submit = (data: TStartQuizDetails) => {
-        Storage.save(STORAGE_KEY, data)
-        naviagate(NAV_LINKS.questions)
-    }
+  const submit = (data: TStartQuizDetails) => { 
+    Storage.save(STORAGE_KEYS.particpant, data)   
+    naviagate(NAV_LINKS.questions)  
+  }
     
 
     return (

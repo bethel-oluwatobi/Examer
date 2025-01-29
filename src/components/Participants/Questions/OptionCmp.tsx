@@ -13,7 +13,6 @@ interface IProps {
 export const OptionsCmp = ({index, optionAnswer, optionLetter, selcetedOption,setSelectedOption}:IProps) => {
 
   const optionsSelect = (index: number) => {
-    console.log(index)
     setSelectedOption(index)
   }
   return (

@@ -7,7 +7,8 @@ export const NAV_LINKS = {
 
 
 export const STORAGE_KEYS = {
-    questionStorage: 'QUESTION_KEY'
+    particpant: 'Partiipant-Details',
+    questionStorage: 'QUESTION_KEY',
 }
 
 export type TExams = {
@@ -29,7 +30,8 @@ export const exams = [
             { id: 'C', answer: 'jacob', },
             { id: 'D', answer: 'david', },
         ],
-        correctOption: 'B'
+        correctOption: 'B',
+        points: 10
     },
     {
         id: 2,
@@ -40,7 +42,8 @@ export const exams = [
             { id: 'C', answer: 'jacob', },
             { id: 'D', answer: 'david', },
         ],
-        correctOption: 'B'
+        correctOption: 'B',
+        points: 10
     },
     {
         id: 3,
@@ -51,6 +54,7 @@ export const exams = [
             { id: 'C', answer: 'jacob', },
             { id: 'D', answer: 'david', },
         ],
-        correctOption: 'B'
+        correctOption: 'B',
+        points: 10
     },
 ] as const

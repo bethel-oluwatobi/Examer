@@ -59,10 +59,10 @@ export const StartQuizView = () => {
         <FormSchema error={errors} fields={START_QUIZ_FIELD} register={register} submit={handleSubmit(submit)} />
         </div>
         {/* footer or instructions sections */ }
-        <div className="flex items-center flex-col gap-5 ">
-            <h3 className=" font-semibold text-[20px] text-[#7E858C] text-center">This is to to inform you that :</h3>
-            <QuizInstructionCmp />
-        </div>
+            <div className="flex items-center flex-col gap-5 ">
+                <h3 className=" font-semibold text-[20px] text-[#7E858C] text-center">This is to to inform you that :</h3>
+                <QuizInstructionCmp />
+            </div>
         </div>
     )
 }

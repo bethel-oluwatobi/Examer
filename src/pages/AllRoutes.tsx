@@ -14,7 +14,7 @@ export const AllRoutes = () => {
     return (
         <Routes >
             <Route path="/:id/start-quiz" element={ <ParticipantLayouts><StartQuiz /></ParticipantLayouts>}/>
-                <Route path="/:id/questions" element={ <Questions /> }/>
+                <Route path="/:id/questions/:id" element={ <Questions /> }/>
                 <Route path="/:id/results" element={ <Result /> }/>
                 <Route path="/:id/answers" element={ <Answers /> }/>
         </Routes>

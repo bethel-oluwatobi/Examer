@@ -4,9 +4,6 @@ import { exams } from "../../shared/participants/constants"
 
 
 
-// const OptionReviewCmp = ({coorectOptions}) => {
-  
-// }
 
 
 
@@ -15,7 +12,7 @@ const QuestionsReviewCmp = () => {
   if (!questionDetailsInStorage) return
   
   const questionReview = exams.map((exam) => {
-    const storedQuestion = questionDetailsInStorage.find((q) => q.questionId === exam.id)
+  const storedQuestion = questionDetailsInStorage.find((q) => q.questionId === exam.id)
     
     return {
       examQuestions: exam.questions,

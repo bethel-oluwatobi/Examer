@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Storage } from "../../lib/stoarge"
 import { NAV_LINKS, STORAGE_KEYS } from "../../shared/participants/constants"
 import { z } from "zod"
+import { useParticipantContext } from "../../context/participant-context/context"
+import { useEffect } from "react"
 
 
 const QuizInstructionCmp = () => {
@@ -34,15 +36,26 @@ const startQuizSchema = z.object({
   fullname:z.string().min(1)
 })
 
+// this will be from the backend because the admin would be able to set whaht kind of information he wants
 const START_QUIZ_FIELD: [ Fields ] = [ { name: 'fullname', type: "text", } ]
 
 // add button to change details
 
 export const StartQuizView = () => {
+  
   const { handleSubmit, register, formState: { errors } } = useForm<TStartQuizDetails>({ resolver: zodResolver(startQuizSchema) })
   const naviagate = useNavigate()
-  
+  const participantContext =  useParticipantContext()
    
+
+
+  useEffect(() => {
+    if (participantContext?.participant)
+    {
+      naviagate(NAV_LINKS.questions)
+    }
+  }, [participantContext?.participant])
+
   const submit = (data: TStartQuizDetails) => { 
     Storage.save(STORAGE_KEYS.particpant, data)   
     naviagate(NAV_LINKS.questions)  

@@ -1,7 +1,7 @@
 // this is where allThe pages would be connexted together via routing system
 
 import { Route, Routes } from "react-router-dom"
-import { StartQuiz,Answers,Questions, Result } from "./participant/exports"
+import { StartQuiz,Answers,Questions, Result, Admin } from "./participant/exports"
 import { ParticipantLayouts } from "../layouts/participants/ParticipantLayouts"
 
 
@@ -9,6 +9,7 @@ import { ParticipantLayouts } from "../layouts/participants/ParticipantLayouts"
 // questiins page
 // result page
 // answers page
+// admin page
 
 export const AllRoutes = () => {
     return (
@@ -17,6 +18,8 @@ export const AllRoutes = () => {
                 <Route path="/:id/questions/:id" element={ <Questions /> }/>
                 <Route path="/:id/results" element={ <Result /> }/>
                 <Route path="/:id/answers" element={ <Answers /> }/>
+                <Route path="/:id/admin" element={<Admin />} />
+
         </Routes>
     )
 }

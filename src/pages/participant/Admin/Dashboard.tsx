@@ -11,20 +11,20 @@ export const Dashboard: React.FC = () => {
     navigate("/:id/answers");
   };
   return (
-    <section className="p-4 ">
-      <div className="p-4 text-center bg-blue-50">
-        <div className="flex justify-around mb-4">
+    <section className="lg:py-20 lg:px-20 p-4">
+      <div className="lg:py-20 lg:px-1 p-4 text-center bg-blue-50 rounded-lg shadow-md">
+        <div className="flex px-5 justify-around mb-4">
           <div className="mr-10">
-            <h3 className="text-sm font-medium">Ongoing</h3>
-            <p className="text-lg font-bold">05</p>
+            <h3 className="text-sm lg:text-xl font-medium">Ongoing</h3>
+            <p className="text-lg lg:text-lg font-bold">05</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium">Ended</h3>
-            <p className="text-lg font-bold">04</p>
+            <h3 className="text-sm lg:text-xl  font-medium">Ended</h3>
+            <p className="text-lg lg:text-lg font-bold">04</p>
           </div>
           <div className="ml-10">
-            <h3 className="text-sm font-medium">Total</h3>
-            <p className="text-lg font-bold">10</p>
+            <h3 className="text-sm lg:text-xl  font-medium">Total</h3>
+            <p className="text-lg lg:text-lg font-bold">10</p>
           </div>
         </div>
       </div>

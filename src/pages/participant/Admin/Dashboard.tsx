@@ -1,73 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { fetchQuizById, cancelQuizForUser } from "../../../lib/mockApi";
+import { useNavigate } from "react-router-dom";
+import { fetchQuizList } from "../../../lib/mockApi"; 
 
-export const ViewQuiz: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [quiz, setQuiz] = useState<any>(null);
+  const [ongoing, setOngoing] = useState(0);
+  const [ended, setEnded] = useState(0);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadQuizDetails = async () => {
+    const loadQuizData = async () => {
       try {
-        const fetchedQuiz = await fetchQuizById(id!);
-        setQuiz(fetchedQuiz);
-      } catch (err) {
-        setError("Quiz not found.");
+        const quizList = await fetchQuizList();
+        const ongoingQuizzes = quizList.filter(q => q.status === "ongoing").length;
+        const endedQuizzes = quizList.filter(q => q.status === "ended").length;
+
+        setOngoing(ongoingQuizzes);
+        setEnded(endedQuizzes);
+        setTotal(quizList.length);
+      } catch (error) {
+        console.error("Failed to fetch quiz data", error);
       } finally {
         setLoading(false);
       }
     };
-    loadQuizDetails();
-  }, [id]);
 
-  const handleCancelQuiz = async () => {
-    if (!quiz) return;
-    try {
-      await cancelQuizForUser(quiz.id);
-      navigate("/dashboard");
-    } catch (err) {
-      console.error("Error canceling quiz:", err);
-    }
-  };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+    loadQuizData();
+  }, []);
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold">{quiz.type} Quiz</h2>
-      <p>Created by: {quiz.creator}</p>
-      <p>Status: {quiz.status}</p>
-      <h3 className="text-lg font-bold mt-4">Participants</h3>
-      {quiz.participants && quiz.participants.length > 0 ? (
-        <ul>
-          {quiz.participants.map((participant: any) => (
-            <li key={participant.id} className="p-2 border rounded my-2">
-              <p>
-                <strong>Name:</strong> {participant.name}
-              </p>
-              <p>
-                <strong>IP:</strong> {participant.ip}
-              </p>
-              <p>
-                <strong>Input:</strong> {participant.input}
-              </p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No participants yet.</p>
-      )}
-      console.log("Participants data:", quiz.participants);
-      <button
-        className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-        onClick={handleCancelQuiz}
-      >
-        Cancel Quiz
-      </button>
-    </div>
+    <section className="p-4">
+      <div className="text-center bg-blue-50 rounded-lg shadow-md p-4">
+        <h3 className="text-xl font-medium">Quiz Summary</h3>
+        <p>Ongoing: {loading ? "Loading..." : ongoing}</p>
+        <p>Ended: {loading ? "Loading..." : ended}</p>
+        <p>Total: {loading ? "Loading..." : total}</p>
+      </div>
+    </section>
   );
 };

@@ -10,12 +10,22 @@ export const ViewQuiz: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("Received ID from route params:", id);
     const loadQuizDetails = async () => {
+      if (!id || id === ":id") {
+        setError("Invalid quiz ID.");
+        setLoading(false);
+        return;
+      }
       try {
-        const fetchedQuiz = await fetchQuizById(id!);
-        setQuiz(fetchedQuiz);
+        const fetchedQuiz = await fetchQuizById(id);
+        if (!fetchedQuiz) {
+          setError("Quiz not found.");
+        } else {
+          setQuiz(fetchedQuiz);
+        }
       } catch (err) {
-        setError("Quiz not found.");
+        setError("Error fetching quiz.");
       } finally {
         setLoading(false);
       }
@@ -61,7 +71,6 @@ export const ViewQuiz: React.FC = () => {
       ) : (
         <p>No participants yet.</p>
       )}
-      console.log("Participants data:", quiz.participants);
       <button
         className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
         onClick={handleCancelQuiz}

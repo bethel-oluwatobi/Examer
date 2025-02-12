@@ -1,100 +1,63 @@
 interface Participant {
-    id: string;
-    name: string;
-    ip: string;
-    input: string;
+  id: string;
+  name: string;
+  ip: string;
+  input: string;
+}
+
+interface Quiz {
+  id: string;
+  type: string;
+  creator: string;
+  status: "Ongoing" | "Ended";
+  participants: Participant[];
+}
+
+const mockQuizzes: Quiz[] = [
+  {
+    id: "1",
+    type: "Math",
+    creator: "Admin",
+    status: "Ongoing",
+    participants: [
+      { id: "p1", name: "John Doe", ip: "192.168.1.1", input: "Answer A" },
+    ],
+  },
+  {
+    id: "2",
+    type: "Science",
+    creator: "Admin",
+    status: "Ended",
+    participants: [
+      { id: "p2", name: "Jane Doe", ip: "192.168.1.2", input: "Answer B" },
+    ],
+  },
+];
+
+export const fetchQuizList = async (): Promise<Quiz[]> => {
+  return mockQuizzes;
+};
+
+export const fetchQuizById = async (quizId: string): Promise<Quiz | null> => {
+  console.log("Fetching quiz by ID:", quizId);
+  if (!quizId || quizId === ":id") {
+    console.error("Invalid quiz ID received:", quizId);
+    return null;
   }
-  
-  interface Quiz {
-    id: string;
-    type: string;
-    creator: string;
-    participants: Participant[];
-    status: "ongoing" | "ended";
+  const quiz = mockQuizzes.find((q) => q.id === quizId);
+  if (!quiz) {
+    console.error("Quiz not found in mock API:", quizId);
+    return null;
   }
-  
-  // Mock quiz data (acts as a database)
-  let quizData: Quiz[] = [
-    {
-      id: "001",
-      type: "Math",
-      creator: "Admin",
-      participants: [
-        { id: "p1", name: "John Doe", ip: "192.168.1.1", input: "Answer A" },
-        { id: "p2", name: "Jane Smith", ip: "192.168.1.2", input: "Answer B" },
-      ],
-      status: "ongoing",
-    },
-    {
-      id: "002",
-      type: "Science",
-      creator: "Admin",
-      participants: [
-        { id: "p3", name: "Alice Brown", ip: "192.168.1.3", input: "Answer C" },
-      ],
-      status: "ongoing",
-    },
-    {
-      id: "003",
-      type: "History",
-      creator: "Staff",
-      participants: [],
-      status: "ended",
-    },
-  ];
-  
-  // Fetch all quizzes
-  export const fetchQuizList = async (): Promise<Quiz[]> => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...quizData]), 500);
-    });
-  };
-  
-  // Fetch quiz by ID
-  export const fetchQuizById = async (quizId: string): Promise<Quiz | null> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const quiz = quizData.find((q) => q.id === quizId);
-        quiz
-          ? resolve(quiz)
-          : reject(new Error(`Quiz with ID ${quizId} not found`));
-      }, 300);
-    });
-  };
-  
-  // Cancel a quiz
-  export const cancelQuizForUser = async (quizId: string) => {
-    return new Promise<{ success: boolean; message: string }>(
-      (resolve, reject) => {
-        setTimeout(() => {
-          const index = quizData.findIndex((quiz) => quiz.id === quizId);
-          if (index !== -1) {
-            quizData = quizData.filter((quiz) => quiz.id !== quizId); // Remove quiz
-            resolve({
-              success: true,
-              message: `Quiz ${quizId} has been canceled.`,
-            });
-          } else {
-            reject(new Error(`Quiz with ID ${quizId} not found.`));
-          }
-        }, 300);
-      }
-    );
-  };
-  
-  // Get quiz statistics
-  export const getQuizStatistics = async () => {
-    return new Promise<{ ongoing: number; ended: number; total: number }>(
-      (resolve) => {
-        setTimeout(() => {
-          const ongoing = quizData.filter(
-            (quiz) => quiz.status === "ongoing"
-          ).length;
-          const ended = quizData.filter((quiz) => quiz.status === "ended").length;
-          const total = quizData.length;
-          resolve({ ongoing, ended, total });
-        }, 400);
-      }
-    );
-  };
-  
+  return quiz;
+};
+
+export const cancelQuizForUser = async (quizId: string): Promise<void> => {
+  const quizIndex = mockQuizzes.findIndex((q) => q.id === quizId);
+  if (quizIndex !== -1) {
+    mockQuizzes[quizIndex].status = "Ended";
+    console.log("Quiz canceled successfully:", quizId);
+  } else {
+    console.error("Quiz not found for cancellation:", quizId);
+  }
+};

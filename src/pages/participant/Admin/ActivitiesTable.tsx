@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import axios from "axios"; // this is for the db
+import { fetchQuizList } from "../../../lib/mockApi";
 
 interface Activity {
   type: string;
@@ -7,52 +7,47 @@ interface Activity {
   duration: string;
 }
 
-// export const ActivitiesTable: React.FC = () => {
-//   const [activities, setActivities] = useState<Activity[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-
-//   useEffect(() => {
-//     const fetchActivities = async () => {
-//       try {
-//         const response = await axios.get<Activity[]>('/api/activities'); // Replace with your API endpoint
-//         setActivities(response.data);
-//         setLoading(false);
-//       } catch (err) {
-//         setError('Failed to fetch activities');
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchActivities();
-//   }, []);
-
-//   if (loading) return <div>Loading...</div>;
-//   if (error) return <div>Error: {error}</div>;
-
-// this is for when you want to connect it to the db i will comment it for now because am not making us of it
-
-const activities: Activity[] = [
-  { type: "Bible Quiz", participants: 10, duration: "15s" },
-  { type: "Math", participants: 50, duration: "1hr" },
-  { type: "Promotion Exam", participants: 100, duration: "30min" },
-  { type: "Chemistry", participants: 20, duration: "1:30hr" },
-  { type: "Biology", participants: 150, duration: "2hr" },
-  { type: "Data Science", participants: 150, duration: "2hr" },
-
-  { type: "Data Analyst", participants: 150, duration: "2hr" },
-  { type: "English", participants: 150, duration: "2hr" },
-  { type: "English", participants: 150, duration: "2hr" },
-  { type: "English", participants: 150, duration: "2hr" },
-  { type: "English", participants: 150, duration: "2hr" },
-  { type: "English", participants: 150, duration: "2hr" },
-  { type: "English", participants: 150, duration: "2hr" },
-];
-
 export const ActivitiesTable: React.FC = () => {
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadQuizSummary = async () => {
+      setLoading(true);
+      try {
+        const quizList = await fetchQuizList();
+
+        // Simulate a duration value (since it's not part of the quiz data)
+        const calculatedActivities = (quizList as any[]).map((quiz) => ({
+          type: quiz.type,
+          participants: quiz.participants,
+          duration: generateRandomDuration(), // Randomized for now
+        }));
+
+        setActivities(calculatedActivities);
+      } catch (err) {
+        setError("Failed to load activities.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadQuizSummary();
+  }, []);
+
+  const generateRandomDuration = (): string => {
+    const durations = ["15s", "30s", "1min", "5min", "30min", "1hr", "2hr"];
+    return durations[Math.floor(Math.random() * durations.length)];
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+
   return (
     <section className="p-4">
-      <h2 className="text-lg font-semibold mb-4">Activities:</h2>
+      <h2 className="text-lg font-semibold mb-4">Quiz Activities Summary</h2>
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">

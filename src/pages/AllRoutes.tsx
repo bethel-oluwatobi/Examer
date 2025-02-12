@@ -1,7 +1,7 @@
 // this is where allThe pages would be connexted together via routing system
 
 import { Route, Routes } from "react-router-dom"
-import { StartQuiz,Answers,Questions, Result, Admin, CreateQuiz  } from "./participant/exports"
+import { StartQuiz,Answers,Questions, Result, Admin, CreateQuiz, ManageQuiz  } from "./participant/exports"
 import { ParticipantLayouts } from "../layouts/participants/ParticipantLayouts"
 // import { CreateQuiz } from "./participant/CkreateQuit/CreateQuiz"
 
@@ -22,6 +22,7 @@ export const AllRoutes = () => {
                 <Route path="/:id/answers" element={ <Answers /> }/>
                 <Route path="/:id/admin" element={<Admin />} />
                 <Route path="/:id/create-quit" element={<CreateQuiz/>} />
+                <Route path="/:id/manage-quiz" element={<ManageQuiz/>} />
 
 
         </Routes>

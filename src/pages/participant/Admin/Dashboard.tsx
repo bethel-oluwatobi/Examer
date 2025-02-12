@@ -1,63 +1,41 @@
-interface Participant {
-  id: string;
-  name: string;
-  ip: string;
-  input: string;
-}
 
-interface Quiz {
-  id: string;
-  type: string;
-  creator: string;
-  status: "Ongoing" | "Ended";
-  participants: Participant[];
-}
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { fetchQuizList } from "../../../lib/mockApi";
 
-const mockQuizzes: Quiz[] = [
-  {
-    id: "1",
-    type: "Math",
-    creator: "Admin",
-    status: "Ongoing",
-    participants: [
-      { id: "p1", name: "John Doe", ip: "192.168.1.1", input: "Answer A" },
-    ],
-  },
-  {
-    id: "2",
-    type: "Science",
-    creator: "Admin",
-    status: "Ended",
-    participants: [
-      { id: "p2", name: "Jane Doe", ip: "192.168.1.2", input: "Answer B" },
-    ],
-  },
-];
+export const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const [ongoing, setOngoing] = useState(0);
+  const [ended, setEnded] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-export const fetchQuizList = async (): Promise<Quiz[]> => {
-  return mockQuizzes;
-};
+  useEffect(() => {
+    const loadQuizData = async () => {
+      try {
+        const quizList = await fetchQuizList();
+        const ongoingQuizzes = quizList.filter((q) => q.status === "Ongoing").length;
+        const endedQuizzes = quizList.filter((q) => q.status === "Ended").length;
+        setOngoing(ongoingQuizzes);
+        setEnded(endedQuizzes);
+        setTotal(quizList.length);
+      } catch (error) {
+        console.error("Failed to fetch quiz data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadQuizData();
+  }, []);
 
-export const fetchQuizById = async (quizId: string): Promise<Quiz | null> => {
-  console.log("Fetching quiz by ID:", quizId);
-  if (!quizId || quizId === ":id") {
-    console.error("Invalid quiz ID received:", quizId);
-    return null;
-  }
-  const quiz = mockQuizzes.find((q) => q.id === quizId);
-  if (!quiz) {
-    console.error("Quiz not found in mock API:", quizId);
-    return null;
-  }
-  return quiz;
-};
-
-export const cancelQuizForUser = async (quizId: string): Promise<void> => {
-  const quizIndex = mockQuizzes.findIndex((q) => q.id === quizId);
-  if (quizIndex !== -1) {
-    mockQuizzes[quizIndex].status = "Ended";
-    console.log("Quiz canceled successfully:", quizId);
-  } else {
-    console.error("Quiz not found for cancellation:", quizId);
-  }
+  return (
+    <section className="p-4">
+      <div className="text-center bg-blue-50 rounded-lg shadow-md p-4">
+        <h3 className="text-lg font-bold">Quiz Summary</h3>
+        <p>Ongoing: {loading ? "Loading..." : ongoing}</p>
+        <p>Ended: {loading ? "Loading..." : ended}</p>
+        <p>Total: {loading ? "Loading..." : total}</p>
+      </div>
+    </section>
+  );
 };
